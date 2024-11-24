@@ -1,0 +1,29 @@
+name: Unstale Issues
+
+on:
+  workflow_dispatch:
+      flags:
+        type: string
+        required: false
+
+  schedule:
+    # * is a special character in YAML, so you have to quote this string
+    # every day at 9:00
+    - cron:  '0 9 * * *'
+
+jobs:
+  unstale-issues:
+    name: unstale issues
+    if: |
+      github.repository == 'iobroker-bot-orga/stale-handler'
+      
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i
+      - run: node ./unstaleIssues.js ${{ github.event.inputs.flags }} 
+        env:
+          IOBBOT_GITHUB_TOKEN: ${{ secrets.IOBBOT_GITHUB_TOKEN }}
