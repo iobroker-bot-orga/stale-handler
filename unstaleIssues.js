@@ -36,7 +36,8 @@ async function commentIssue(context, number) {
 
     let comments = await github.getAllComments(context.owner, `ioBroker.${context.adapter}`, number);
     comments = comments || [];
-    console.log(JSON.stringify(comments));
+    debug(`comments of issue ${number}`);
+    debug(JSON.stringify(comments));
     comments = comments.filter( c => c.body === UNSTALE_TEXT );
 
     if (comments.length) {
@@ -66,6 +67,8 @@ async function checkRepository(context) {
     if (!issues) issues = [];
 
     issues = issues.filter(i => i.state === 'open');
+
+    debug( `Open issues of adapter ${context.adapter}`);
     debug (JSON.stringify( issues ));
 
     issues = issues.filter(i => {
@@ -79,6 +82,7 @@ async function checkRepository(context) {
 
     issues = issues.filter(i => unstaleUsers.includes(i.user?.login));
 
+    debug( `filtered issues of adapter ${context.adapter}`);
     debug (JSON.stringify( issues ));
 
     for (const issue of issues) {
