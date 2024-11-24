@@ -1,6 +1,6 @@
-# ioBroker Bot Task Library
-This is a code for frontend and back-end of the service https://adapter-check.iobroker.in/
+# ioBroker Bot Stale Handler
 
+This repository contains procedures to handle stale issues and PRs.
 
 <!--
 	Placeholder for the next version (at the beginning of the line):
