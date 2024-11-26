@@ -9,7 +9,7 @@ on:
   schedule:
     # * is a special character in YAML, so you have to quote this string
     # every day at 9:00
-    - cron:  '0 9 * * *'
+    - cron:  '30 8,20 * * *'
 
 jobs:
   unstale-issues:
