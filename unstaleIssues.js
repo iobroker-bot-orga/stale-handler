@@ -143,7 +143,7 @@ async function main() {
         context.adapter = adapter;
 
         await checkRepository(context);
-        await common.sleep(30000);
+        await common.sleep(5000);
     };
 
     console.log ('\n\nSummary of stale issues processed:');
