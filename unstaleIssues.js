@@ -4,7 +4,7 @@
 const {parseArgs} = require('node:util');
 //const axios = require('axios');
 
-//const common = require('./lib/commonTools.js');
+const common = require('./lib/commonTools.js');
 const github = require('./lib/githubTools.js');
 const iobroker = require('./lib/iobrokerTools.js');
 
@@ -143,6 +143,7 @@ async function main() {
         context.adapter = adapter;
 
         await checkRepository(context);
+        await common.sleep(5000);
     };
 
     console.log ('\n\nSummary of stale issues processed:');
