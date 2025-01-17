@@ -72,7 +72,10 @@ async function checkRepository(context) {
     debug (JSON.stringify( issues ));
 
     issues = issues.filter(i => {
-        for (const label of i.labels) {if (label.name.toLowerCase() === 'stale') return true;}
+        for (const label of i.labels) {
+            if (label.name.toLowerCase() === 'stale') return true;
+            if (label.name.toLowerCase() === 'wontfix') return true;
+        }
         return false;
     });
 
