@@ -17,7 +17,10 @@ const opts = {
 const unstaleUsers = [
     'ioBroker-Bot',
     'Apollon77',
-    'mcm1957'
+    'GermanBluefox',
+    'foxriver76',
+    'mcm1957',
+    'simatec'
 ];
 
 const UNSTALE_TEXT = '**This issue should not be considered stale.**\nPlease process and close it if completed.';
