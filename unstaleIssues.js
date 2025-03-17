@@ -18,6 +18,7 @@ const unstaleUsers = [
     'ioBroker-Bot',
     'ioBrokerTranslator',
     'dependabot',
+    'dependabot[bot]',
     'Apollon77',
     'GermanBluefox',
     'foxriver76',
