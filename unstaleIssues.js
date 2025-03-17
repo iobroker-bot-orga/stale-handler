@@ -16,6 +16,8 @@ const opts = {
 
 const unstaleUsers = [
     'ioBroker-Bot',
+    'ioBrokerTranslator',
+    'dependabot',
     'Apollon77',
     'GermanBluefox',
     'foxriver76',
