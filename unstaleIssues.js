@@ -89,8 +89,10 @@ async function checkRepository(context) {
         console.log (`[INFO] Issue ${issue.number} created by ${issue.user?.login} ("${issue.title}") is marked as stale`);
     }
 
-    issues = issues.filter(i => unstaleUsers.includes(i.user?.login));
-
+    if ( ${context.owner} !== 'iobroker-community-adapters' ) {
+        issues = issues.filter(i => unstaleUsers.includes(i.user?.login));
+    }
+    
     debug( `filtered issues of adapter ${context.adapter}`);
     debug (JSON.stringify( issues ));
 
