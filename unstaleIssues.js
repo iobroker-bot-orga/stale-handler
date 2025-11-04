@@ -92,6 +92,9 @@ async function checkRepository(context) {
     if ( context.owner !== 'iobroker-community-adapters' ) {
         issues = issues.filter(i => unstaleUsers.includes(i.user?.login));
     }
+
+    // Filter out ReadyForStable issues as they can be recreated automatically
+    issues = issues.filter(i => !i.title.startsWith('🚀 Please add adapter to stable repository'));
     
     debug( `filtered issues of adapter ${context.adapter}`);
     debug (JSON.stringify( issues ));
