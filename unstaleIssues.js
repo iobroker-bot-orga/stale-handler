@@ -95,7 +95,9 @@ async function checkRepository(context) {
 
     // Filter out ReadyForStable issues as they can be recreated automatically
     issues = issues.filter(i => !i.title.startsWith('🚀 Please add adapter to stable repository'));
+    issues = issues.filter(i => !i.title.startsWith('Please add adapter to stable repository'));
     issues = issues.filter(i => !i.title.startsWith('🚀 Consider updating stable version in repo'));    
+    issues = issues.filter(i => !i.title.startsWith('Consider updating stable version in repo'));    
 
     // Filter out Repochecker issues as they are recreated automatically
     issues = issues.filter(i => !i.title.startsWith('Please consider fixing issues detected by repository checker'));    
