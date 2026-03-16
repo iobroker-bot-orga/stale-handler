@@ -100,7 +100,7 @@ async function checkRepository(context) {
     issues = issues.filter(i => !i.title.startsWith('Consider updating stable version in repo'));    
 
     // Filter out Repochecker issues as they are recreated automatically
-    issues = issues.filter(i => !i.title.startsWith('Please consider fixing issues detected by repository checker'));    
+    // issues = issues.filter(i => !i.title.startsWith('Please consider fixing issues detected by repository checker'));    
     
     debug( `filtered issues of adapter ${context.adapter}`);
     debug (JSON.stringify( issues ));
