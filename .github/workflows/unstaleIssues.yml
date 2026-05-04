@@ -19,11 +19,25 @@ jobs:
       
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm i
       - run: node ./unstaleIssues.js ${{ github.event.inputs.flags }} 
         env:
           IOBBOT_GITHUB_TOKEN: ${{ secrets.IOBBOT_GITHUB_TOKEN }}
+      - name: Send mail on failures
+        if: hashFiles('.stale_failures.html') != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: mail.gmx.net
+          server_port: 465
+          secure: true
+          username: iobroker-bot@gmx.at
+          password: ${{ secrets.IOBBOT_GMXMAIL }}
+          subject: '[iob-bot] Stale handler: failed to comment on issues'
+          to: iobroker-bot@gmx.at
+          from: ioBroker Bot
+          html_body: file://.stale_failures.html
+          convert_markdown: false
