@@ -2,6 +2,7 @@
 'use strict';
 
 const {parseArgs} = require('node:util');
+const fs = require('fs');
 //const axios = require('axios');
 
 const common = require('./lib/commonTools.js');
@@ -30,6 +31,7 @@ const UNSTALE_TEXT = '**This issue should not be considered stale.**\nPlease pro
 
 const context = {};
 const summary = [];
+const failed = [];
 
 function debug(text) {
     if (opts.debug) {
@@ -40,7 +42,13 @@ function debug(text) {
 async function commentIssue(context, number) {
     debug(`commentIssue()`);
 
-    let comments = await github.getAllComments(context.owner, `ioBroker.${context.adapter}`, number);
+    let comments;
+    try {
+        comments = await github.getAllComments(context.owner, `ioBroker.${context.adapter}`, number);
+    } catch {
+        console.log(`[INFO] could not retrieve existing comments for issue ${number}, skipping delete step`);
+        comments = [];
+    }
     comments = comments || [];
     debug(`comments of issue ${number}`);
     debug(JSON.stringify(comments));
@@ -60,9 +68,14 @@ async function commentIssue(context, number) {
         debug( 'NO existing comments detected');
     };
 
-    if (!opts.dry) await github.addComment(context.owner, `ioBroker.${context.adapter}`, number, UNSTALE_TEXT);
-    console.log (`[INFO] new comment added`);
-
+    try {
+        if (!opts.dry) await github.addComment(context.owner, `ioBroker.${context.adapter}`, number, UNSTALE_TEXT);
+        console.log (`[INFO] new comment added`);
+        return true;
+    } catch (e) {
+        console.error(`[ERROR] failed to add comment to ${context.owner}/ioBroker.${context.adapter}#${number}: ${e.message}`);
+        return false;
+    }
 }
 
 async function checkRepository(context) {
@@ -106,11 +119,13 @@ async function checkRepository(context) {
     debug (JSON.stringify( issues ));
 
     for (const issue of issues) {
-        summary.push (`${context.owner}/ioBroker.${context.adapter} - ${issue.number}/${issue.user?.login} (${issue.title})`);
-    }
-
-    for (const issue of issues) {
-        await commentIssue (context, issue.number);
+        const entry = `${context.owner}/ioBroker.${context.adapter} - ${issue.number}/${issue.user?.login} (${issue.title})`;
+        const success = await commentIssue(context, issue.number);
+        if (success) {
+            summary.push(entry);
+        } else {
+            failed.push(entry);
+        }
     }
 }
 
@@ -166,10 +181,26 @@ async function main() {
         await common.sleep(5000);
     };
 
-    console.log ('\n\nSummary of stale issues processed:');
-    console.log (summary.join('\n'));
+    console.log ('\n\nSummary of stale issues successfully commented:');
+    if (summary.length) {
+        console.log (summary.join('\n'));
+    } else {
+        console.log ('(none)');
+    }
     console.log(``);
-    if (opts.dry) console.log('[DRY] This run dir not change any isses as --dry was specified.\n')
+
+    if (failed.length) {
+        console.log ('[WARNING] Failed to add comment to the following issues:');
+        console.log (failed.join('\n'));
+        console.log(``);
+
+        const reportLines = failed.map(f => `<li>${f}</li>`).join('\n');
+        const report = `<h2>Stale handler: Failed to add comment to the following issues:</h2>\n<ul>\n${reportLines}\n</ul>\n`;
+        fs.writeFileSync('.stale_failures.html', report);
+        console.log(`[INFO] Failure report written to .stale_failures.html`);
+    }
+
+    if (opts.dry) console.log('[DRY] This run did not change any issues as --dry was specified.\n')
     console.log(`[INFO] task completed`);
 }
 
