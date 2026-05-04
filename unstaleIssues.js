@@ -39,6 +39,18 @@ function debug(text) {
     }
 }
 
+function isAutoCreatedIssue(issue) {
+    return issue.title.startsWith('🚀 Please add adapter to stable repository') ||
+        issue.title.startsWith('Please add adapter to stable repository') ||
+        issue.title.startsWith('🚀 Consider updating stable version in repo') ||
+        issue.title.startsWith('Consider updating stable version in repo');
+}
+
+function shouldCommentIssue(issue, ownerIsIoBrokerCommunity) {
+    const userAllowed = ownerIsIoBrokerCommunity || unstaleUsers.includes(issue.user?.login);
+    return userAllowed && !isAutoCreatedIssue(issue);
+}
+
 async function commentIssue(context, number) {
     debug(`commentIssue()`);
 
@@ -98,19 +110,13 @@ async function checkRepository(context) {
         return false;
     });
 
+    const ownerIsIoBrokerCommunity = context.owner === 'iobroker-community-adapters';
     for (const issue of issues) {
-        console.log (`[INFO] Issue ${issue.number} created by ${issue.user?.login} ("${issue.title}") is marked as stale`);
+        const status = shouldCommentIssue(issue, ownerIsIoBrokerCommunity) ? 'will receive a comment' : 'ignored';
+        console.log (`[INFO] Issue ${issue.number} created by ${issue.user?.login} ("${issue.title}") is marked as stale (${status})`);
     }
 
-    if ( context.owner !== 'iobroker-community-adapters' ) {
-        issues = issues.filter(i => unstaleUsers.includes(i.user?.login));
-    }
-
-    // Filter out ReadyForStable issues as they can be recreated automatically
-    issues = issues.filter(i => !i.title.startsWith('🚀 Please add adapter to stable repository'));
-    issues = issues.filter(i => !i.title.startsWith('Please add adapter to stable repository'));
-    issues = issues.filter(i => !i.title.startsWith('🚀 Consider updating stable version in repo'));    
-    issues = issues.filter(i => !i.title.startsWith('Consider updating stable version in repo'));    
+    issues = issues.filter(i => shouldCommentIssue(i, ownerIsIoBrokerCommunity));
 
     // Filter out Repochecker issues as they are recreated automatically
     // issues = issues.filter(i => !i.title.startsWith('Please consider fixing issues detected by repository checker'));    
