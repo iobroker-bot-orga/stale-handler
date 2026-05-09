@@ -29,7 +29,7 @@ jobs:
           IOBBOT_GITHUB_TOKEN: ${{ secrets.IOBBOT_GITHUB_TOKEN }}
       - name: Send mail on failures
         if: hashFiles('.stale_failures.html') != ''
-        uses: dawidd6/action-send-mail@v3
+        uses: dawidd6/action-send-mail@v17
         with:
           server_address: mail.gmx.net
           server_port: 465
