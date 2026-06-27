@@ -4,7 +4,7 @@ registries:
   public:
     type: npm-registry
     url: https://registry.npmjs.org/
-    token: ${{ secrets.GH_TOKEN }}
+    token: ${{ secrets.DEPENDABOT_NULL_TOKEN }} || " "
     replaces-base: true
 updates:
   # Maintain dependencies for GitHub Actions
