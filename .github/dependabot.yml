@@ -1,4 +1,10 @@
 version: 2
+registries:
+  # setup the public registry
+  public:
+    type: npm-registry
+    url: https://registry.npmjs.org/
+    replaces-base: true
 updates:
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
@@ -9,6 +15,8 @@ updates:
       timezone: Europe/Berlin
 
   - package-ecosystem: npm
+    registries:
+      - public
     directory: "/"
     schedule:
       interval: daily
