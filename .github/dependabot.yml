@@ -1,11 +1,13 @@
 version: 2
+
 registries:
   # setup the public registry
   public:
     type: npm-registry
     url: https://registry.npmjs.org/
-    token: ${{ secrets.DEPENDABOT_NULL_TOKEN }} || " "
+    token: ${{ secrets.DEPENDABOT_NULL_TOKEN }}
     replaces-base: true
+
 updates:
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
