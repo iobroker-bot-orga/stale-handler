@@ -38,6 +38,6 @@ jobs:
           password: ${{ secrets.IOBBOT_GMXMAIL }}
           subject: '[iob-bot] Stale handler: failed to comment on issues'
           to: iobroker-bot@gmx.at
-          from: ioBroker Bot
+          from: '"ioBroker Bot" <iobroker-bot@gmx.at>'
           html_body: file://.stale_failures.html
           convert_markdown: false
